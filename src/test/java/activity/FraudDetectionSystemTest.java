@@ -1,7 +1,7 @@
 package activity;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import activity.FraudDetectionSystem;
 import activity.FraudDetectionSystem.FraudCheckResult;

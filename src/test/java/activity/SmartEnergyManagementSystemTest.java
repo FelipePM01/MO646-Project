@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class SmartEnergyManagementSystemTest {
     // Ocorre um loop infinito no teste a seguir já que a lógica do máximo de energia diário não considera o caso em que o único dispositivo que é possível reduzir tem prioridade máxima
-    // @Test(timeout = 10000)
+    // @Test()
     // public void tc1(){
     //     double currentPrice=10.0;
     //     double priceThreshold=9.0;
@@ -52,7 +52,7 @@ public class SmartEnergyManagementSystemTest {
 
 
     // Verificação não passa por não considerar uso adicional por ativação por agendamento 
-    @Test(timeout = 10000)
+    @Test()
     public void tc2(){
         double currentPrice=10.0;
         double priceThreshold=9.0;
