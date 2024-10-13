@@ -13,9 +13,9 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.host.url>http://localhost:9000</sonar.host.url>
-        <sonar.login>sqp_5f9644a26b91000b84ef9824c3b0e469c4c879e3</sonar.login>
-        <sonar.projectKey>Atividade4</sonar.projectKey>
-        <sonar.projectName>MO646-Activity</sonar.projectName>
+        <sonar.login>sqp_0a495b93b47089b24ee1aa32aa6ed80772dbc504</sonar.login>
+        <sonar.projectKey>sonarqube-first</sonar.projectKey>
+        <sonar.projectName>mo646-project</sonar.projectName>
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.tests>src/test/java</sonar.tests>
         <sonar.java.binaries>target/classes</sonar.java.binaries>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.1</version>
+            <version>5.11.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -61,6 +61,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.2</version>
+                <dependencies>
+                <dependency>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-junit5-plugin</artifactId>
+                    <version>1.2.1</version>
+                </dependency>
+                </dependencies>
             </plugin>
             
         </plugins>
