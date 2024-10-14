@@ -69,7 +69,7 @@ class FlightBookingSystemTest {
         assertEquals(true, result.pointsUsed);
     }
 
-    // Cancelamento a mais de 48 horas
+    // Cancelamento maior ou igual a 48 horas
     @Test
     void tc3() {
         int passengers = 2;
@@ -78,7 +78,7 @@ class FlightBookingSystemTest {
         double currentPrice = 150;
         int previousSales = 30;
         boolean isCancellation = true;
-        LocalDateTime departureTime = bookingTime.plusDays(3);
+        LocalDateTime departureTime = bookingTime.plusDays(2);
         int rewardPointsAvailable = 0;
         FlightBookingSystem.BookingResult result = system.bookFlight(
             passengers,
@@ -124,6 +124,36 @@ class FlightBookingSystemTest {
         assertEquals(expectedRefund, result.refundAmount, 0.001);
         assertFalse(result.confirmation);
         assertEquals(0, result.totalPrice, 0.001);
+        assertEquals(false, result.pointsUsed);
+    }
+
+    // Compra válida sem last-minute fee, sem group discount e sem reward points para matar mutations
+    @Test
+    void tc5_mutations() {
+        int passengers = 4;
+        LocalDateTime bookingTime = LocalDateTime.now();
+        int availableSeats = 4;
+        double currentPrice = 200;
+        int previousSales = 50;
+        boolean isCancellation = false;
+        LocalDateTime departureTime = bookingTime.plusHours(24);
+        int rewardPointsAvailable = 0;
+        FlightBookingSystem.BookingResult result = system.bookFlight(
+            passengers,
+            bookingTime,
+            availableSeats,
+            currentPrice,
+            previousSales,
+            isCancellation,
+            departureTime,
+            rewardPointsAvailable
+        );
+        
+        
+        double expectedPrice = (currentPrice * ((previousSales / 100.0) * 0.8) * passengers)- rewardPointsAvailable*0.01;
+        assertEquals(expectedPrice, result.totalPrice, 0.001);
+        assertTrue(result.confirmation);
+        assertEquals(0, result.refundAmount, 0.001);
         assertEquals(false, result.pointsUsed);
     }
 
