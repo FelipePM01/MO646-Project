@@ -330,6 +330,94 @@ public class FraudDetectionSystemTest {
         assertEquals(expectedBlockedStatus,result.isBlocked);
     }
 
+    //Transaction Amount is exactly 10000
+    @Test
+    public void tc11(){
+        double transactionAmount = 10000;
+        LocalDateTime transactionTime = LocalDateTime.parse("2024-04-20T10:00:00");
+        String transactionLocation = "Brazil";
+        List<Transaction> transactionList= new ArrayList<Transaction>();
+        List<String> blacklisted = new ArrayList<String>();
+        FraudDetectionSystem system = new FraudDetectionSystem();
+        FraudDetectionSystem.Transaction transaction = new FraudDetectionSystem.Transaction(transactionAmount,transactionTime,transactionLocation);
+        FraudCheckResult result = system.checkForFraud(transaction,transactionList,blacklisted);
+
+        boolean expectedVerification = false;
+        boolean expectedFraudFlag = false;
+        int expectedRiskScore = 0;
+        boolean expectedBlockedStatus = false;
+        assertEquals(expectedVerification,result.verificationRequired);
+        assertEquals(expectedFraudFlag,result.isFraudulent);
+        assertEquals(expectedBlockedStatus,result.isBlocked);
+        assertEquals(expectedRiskScore,result.riskScore);
+    }
+
+    //Previous transaction exactly 30 minutes earlier in another location
+    @Test
+    public void tc12(){
+        double transactionAmount = 800.00;
+        LocalDateTime transactionTime = LocalDateTime.parse("2024-04-20T10:00:00");
+        String transactionLocation = "Brazil";
+        List<Transaction> transactionList= new ArrayList<Transaction>();
+
+        LocalDateTime previousTransactionTime = transactionTime.minusMinutes(30);
+        double previousTransactionAmount = 500.00;
+        String previousTransactionLocation = "France";
+
+        FraudDetectionSystem.Transaction previousTransaction = new FraudDetectionSystem.Transaction(previousTransactionAmount, previousTransactionTime, previousTransactionLocation);
+
+        transactionList.add(previousTransaction);
+
+        List<String> blacklisted = new ArrayList<String>();
+        FraudDetectionSystem system = new FraudDetectionSystem();
+        FraudDetectionSystem.Transaction transaction = new FraudDetectionSystem.Transaction(transactionAmount,transactionTime,transactionLocation);
+        FraudCheckResult result = system.checkForFraud(transaction,transactionList,blacklisted);
+
+        boolean expectedVerification = false;
+        boolean expectedFraudFlag = false;
+        int expectedRiskScore = 0;
+        boolean expectedBlockedStatus = false;
+        assertEquals(expectedRiskScore,result.riskScore);
+        assertEquals(expectedVerification,result.verificationRequired);
+        assertEquals(expectedFraudFlag,result.isFraudulent);
+        assertEquals(expectedBlockedStatus,result.isBlocked);
+    }
+
+    //10 transactions, with the first one being exactly 60 minutes earlier
+    @Test
+    public void tc13(){
+        double transactionAmount = 500;
+        LocalDateTime transactionTime = LocalDateTime.parse("2024-04-20T10:00:00");
+        String transactionLocation = "Brazil";
+        List<Transaction> transactionList= new ArrayList<Transaction>();
+
+        for (int i = 0; i <= 10; i++) {
+            LocalDateTime previousTransactionTime = transactionTime.minusMinutes(i * 6);
+            double previousTransactionAmount = 500.00;
+            String previousTransactionLocation = "Brazil";
+
+            FraudDetectionSystem.Transaction previousTransaction =
+                    new FraudDetectionSystem.Transaction(previousTransactionAmount, previousTransactionTime, previousTransactionLocation);
+
+            transactionList.add(previousTransaction);
+        }
+
+        List<String> blacklisted = new ArrayList<String>();
+        FraudDetectionSystem system = new FraudDetectionSystem();
+        FraudDetectionSystem.Transaction transaction = new FraudDetectionSystem.Transaction(transactionAmount,transactionTime,transactionLocation);
+        FraudCheckResult result = system.checkForFraud(transaction,transactionList,blacklisted);
+
+        boolean expectedVerification = false;
+        boolean expectedFraudFlag = false;
+        int expectedRiskScore = 30;
+        boolean expectedBlockedStatus = true;
+        assertEquals(expectedRiskScore,result.riskScore);
+        assertEquals(expectedVerification,result.verificationRequired);
+        assertEquals(expectedFraudFlag,result.isFraudulent);
+        assertEquals(expectedBlockedStatus,result.isBlocked);
+    }
+
+
 }
 
 
